@@ -1,0 +1,19 @@
+# Local editor and automation state
+.idea/
+.vscode/
+.opencode/
+.playwright-mcp/
+tmp/
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+
+# Scratch screenshots from local UI audits
+audit-*.png
+phase*-*.png
+
+# Common local noise
+.DS_Store
+*.log
+Thumbs.db

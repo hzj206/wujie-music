@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fff7e8">
+    <title>页面迷路了 - MuseHub</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        padding: 24px;
+        color: #2f2f2f;
+        font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 82% 14%, rgba(255, 225, 160, .46), transparent 25rem),
+          radial-gradient(circle at 12% 8%, rgba(255, 255, 255, .96), transparent 24rem),
+          linear-gradient(180deg, #fffaf0, #fff0d8);
+      }
+      main {
+        width: min(620px, 100%);
+        padding: clamp(30px, 7vw, 58px);
+        text-align: center;
+        border: 1px solid rgba(234, 223, 200, .78);
+        border-radius: 40px;
+        background: rgba(255, 252, 242, .92);
+        box-shadow: 0 24px 72px rgba(160, 120, 60, .14);
+      }
+      svg {
+        width: 120px;
+        height: 120px;
+        display: block;
+        margin: 0 auto 16px;
+      }
+      h1 { margin: 0 0 10px; font-size: clamp(32px, 7vw, 54px); }
+      p {
+        max-width: 30rem;
+        margin: 0 auto 24px;
+        color: #6c6256;
+        line-height: 1.75;
+      }
+      a {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 24px;
+        border-radius: 999px;
+        color: #2f2f2f;
+        font-weight: 800;
+        text-decoration: none;
+        background: linear-gradient(135deg, #ffe59a, #f8c64f);
+        box-shadow: 0 14px 30px rgba(248, 198, 79, .24);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <rect width="120" height="120" rx="32" fill="#FFE7A6"/>
+        <rect x="38" y="28" width="45" height="61" rx="12" fill="#FFF9EB" stroke="#F3D392" stroke-width="4"/>
+        <path d="M48 70V46l31-6v24" fill="none" stroke="#2F2F2F" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"/>
+        <circle cx="45" cy="76" r="10" fill="#EF776E"/>
+        <circle cx="76" cy="70" r="10" fill="#F8C64F"/>
+      </svg>
+      <h1>页面迷路了</h1>
+      <p>这里没有可播放的页面。MuseHub 会把你带回首页，搜索和收藏都还在原地等你。</p>
+      <a href="/#/home">返回首页</a>
+    </main>
+    <script>
+      window.setTimeout(() => window.location.replace("/#/home"), 3200);
+    </script>
+  </body>
+</html>

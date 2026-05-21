@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fff7e8">
+    <title>MuseHub 离线中</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        color: #2f2f2f;
+        font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 16% 12%, rgba(255, 255, 255, .94), transparent 22rem),
+          linear-gradient(145deg, #fffaf0, #fff0d8);
+      }
+      main {
+        width: min(520px, 100%);
+        padding: clamp(28px, 6vw, 48px);
+        text-align: center;
+        border: 1px solid rgba(234, 223, 200, .8);
+        border-radius: 36px;
+        background: rgba(255, 252, 242, .92);
+        box-shadow: 0 20px 60px rgba(160, 120, 60, .14);
+      }
+      img {
+        width: 112px;
+        height: 112px;
+        display: block;
+        margin: 0 auto 18px;
+      }
+      h1 { margin: 0 0 10px; font-size: clamp(28px, 6vw, 42px); }
+      p { margin: 0 0 22px; color: #6c6256; line-height: 1.7; }
+      a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 22px;
+        border-radius: 999px;
+        color: #2f2f2f;
+        font-weight: 800;
+        text-decoration: none;
+        background: linear-gradient(135deg, #ffe59a, #f8c64f);
+        box-shadow: 0 14px 30px rgba(248, 198, 79, .24);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="./assets/icons/musehub-mark.svg" alt="">
+      <h1>暂时离线</h1>
+      <p>已缓存的 MuseHub 页面仍可打开。音乐搜索和播放需要网络恢复后继续。</p>
+      <a href="./#/home">返回首页</a>
+    </main>
+  </body>
+</html>

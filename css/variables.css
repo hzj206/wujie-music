@@ -1,0 +1,86 @@
+:root {
+  --color-bg: #fff7e8;
+  --color-bg-soft: #fffaf0;
+  --color-bg-warm: #fff0d8;
+  --color-card: rgba(255, 252, 242, 0.9);
+  --color-card-strong: rgba(255, 249, 234, 0.96);
+  --color-primary: #f8c64f;
+  --color-primary-deep: #f3ae24;
+  --color-primary-light: #ffe59a;
+  --color-accent: #ef776e;
+  --color-accent-soft: #ffe2d8;
+  --color-mint: #94d8b7;
+  --color-blue: #88b8f3;
+  --color-purple: #b894f2;
+  --color-text: #2f2f2f;
+  --color-text-soft: #5c554b;
+  --color-text-muted: #8f887d;
+  --color-border: #eadfc8;
+  --color-border-soft: rgba(234, 223, 200, 0.72);
+  --color-white: #fffefa;
+  --radius-xl: 34px;
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+  --shadow-soft: 0 12px 32px rgba(160, 120, 60, 0.12);
+  --shadow-card: 0 18px 46px rgba(178, 128, 66, 0.13);
+  --shadow-glow: 0 24px 70px rgba(248, 198, 79, 0.24);
+  --header-height: 82px;
+  --page-max: 1640px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body.theme-mint {
+  --color-bg: #f3fbf2;
+  --color-bg-soft: #fbfff8;
+  --color-bg-warm: #e9f7df;
+  --color-card: rgba(250, 255, 247, 0.92);
+  --color-card-strong: rgba(252, 255, 249, 0.96);
+  --color-primary: #9dd982;
+  --color-primary-deep: #6bbf63;
+  --color-primary-light: #dff4b9;
+  --color-accent: #58a889;
+  --color-accent-soft: #dcf3e8;
+  --color-text: #263a31;
+  --color-text-soft: #53665c;
+  --color-text-muted: #809087;
+  --color-border: #dcebcf;
+  --shadow-soft: 0 12px 32px rgba(86, 144, 82, 0.12);
+}
+
+body.theme-night {
+  --color-bg: #eeeaf4;
+  --color-bg-soft: #faf7f1;
+  --color-bg-warm: #e5deed;
+  --color-card: rgba(255, 250, 241, 0.9);
+  --color-card-strong: rgba(255, 251, 244, 0.96);
+  --color-primary: #f0c76a;
+  --color-primary-deep: #c89142;
+  --color-primary-light: #ffe7ab;
+  --color-accent: #858dcc;
+  --color-accent-soft: #e7e8ff;
+  --color-text: #303044;
+  --color-text-soft: #5b586f;
+  --color-text-muted: #8a8499;
+  --color-border: #ded2c3;
+  --shadow-soft: 0 12px 32px rgba(83, 78, 112, 0.13);
+}
+
+body.theme-sakura {
+  --color-bg: #fff2ee;
+  --color-bg-soft: #fffaf5;
+  --color-bg-warm: #ffe5df;
+  --color-card: rgba(255, 250, 246, 0.92);
+  --color-card-strong: rgba(255, 249, 246, 0.96);
+  --color-primary: #ffc96f;
+  --color-primary-deep: #ef9b6f;
+  --color-primary-light: #ffe5b1;
+  --color-accent: #ef888e;
+  --color-accent-soft: #ffe1e5;
+  --color-text: #3a2d2f;
+  --color-text-soft: #675253;
+  --color-text-muted: #967f7f;
+  --color-border: #eed7cf;
+  --shadow-soft: 0 12px 32px rgba(176, 102, 92, 0.12);
+}
