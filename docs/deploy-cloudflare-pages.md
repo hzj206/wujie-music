@@ -57,7 +57,7 @@ MuseHub 是纯静态项目，没有 Node 构建产物。
 1. 在 Pages 项目的 Custom domains 中添加域名。
 2. 按 Cloudflare 提示完成 DNS 绑定。
 3. 等待 HTTPS 证书就绪。
-4. 将 `robots.txt`、`sitemap.xml` 及 `public/` 下副本中的 `https://musehub.pages.dev` 替换为最终域名。
+4. 若后续绑定自定义域名，将 `robots.txt`、`sitemap.xml` 及 `public/` 下副本中的 `https://wujie-music.pages.dev` 替换为自定义域名。
 
 ## 7. 缓存刷新
 

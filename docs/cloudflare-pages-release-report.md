@@ -28,7 +28,7 @@
 
 ## 域名上线前要改
 
-- 将 `robots.txt` 和 `sitemap.xml` 中的默认 `https://musehub.pages.dev` 换成最终 Pages 域名或自定义域名。
+- 若后续绑定自定义域名，将 `robots.txt` 和 `sitemap.xml` 中的当前 `https://wujie-music.pages.dev` 替换为自定义域名。
 - 若 GitHub Pages 使用仓库子路径，需要复核 `404.html` 的根路径跳转。
 
 ## 边界
