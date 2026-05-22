@@ -1,4 +1,4 @@
-const STATIC_CACHE = "musehub-static-v3";
+const STATIC_CACHE = "musehub-static-v5";
 const CORE_ASSETS = [
   "./",
   "./index.html",

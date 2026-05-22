@@ -17,7 +17,10 @@
   function canUseProxy(options) {
     if (options && options.direct) return false;
     if (!window.location || window.location.protocol === "file:") return false;
-    return /^https?:$/.test(window.location.protocol);
+    if (!/^https?:$/.test(window.location.protocol)) return false;
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1" || host === "::1") return false;
+    return true;
   }
 
   function proxyUrl(path, params) {
