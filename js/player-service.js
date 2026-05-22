@@ -35,22 +35,55 @@
     return message || "播放失败，可能是音源失效或浏览器限制。";
   }
 
+  function audioProxyUrl(url) {
+    if (!url || !window.location || !/^https?:$/.test(window.location.protocol)) return "";
+    return `${window.location.origin}/api/audio?url=${encodeURIComponent(url)}`;
+  }
+
+  function isAudioProxyUrl(url) {
+    return Boolean(url && window.location && String(url).startsWith(`${window.location.origin}/api/audio?`));
+  }
+
+  function canProxyAudioUrl(url) {
+    return Boolean(url && /^https?:\/\//i.test(String(url)) && !isAudioProxyUrl(url) && window.location && /^https?:$/.test(window.location.protocol));
+  }
+
   function normalizeAudioUrl(url) {
     if (!url) return "";
     const text = String(url).trim();
     if (!text) return "";
     if (text.startsWith("//")) return `${window.location.protocol === "https:" ? "https:" : "http:"}${text}`;
-    if (window.location.protocol === "https:" && /^http:\/\//i.test(text)) {
-      return text.replace(/^http:\/\//i, "https://");
-    }
+    if (window.location.protocol === "https:" && /^http:\/\//i.test(text)) return audioProxyUrl(text);
     return text;
   }
 
   function normalizePlayable(song, response) {
     const next = window.MuseHub.Normalize.normalizePlayableSong(song, response);
+    const originalUrl = String(next.url || "").trim();
+    next.originalUrl = originalUrl;
+    next.directUrl = originalUrl.startsWith("//")
+      ? `${window.location.protocol === "https:" ? "https:" : "http:"}${originalUrl}`
+      : originalUrl;
     next.url = normalizeAudioUrl(next.url);
     if (!next.url) throw playableError("当前歌曲暂无可用音源", "NO_URL");
     return next;
+  }
+
+  async function playResolvedWithRetry(playable) {
+    try {
+      return await window.MuseHub.Player.playResolvedSong(playable);
+    } catch (error) {
+      const rawUrl = playable && (playable.originalUrl || playable.directUrl);
+      const proxy = canProxyAudioUrl(rawUrl) ? audioProxyUrl(rawUrl) : "";
+      if (proxy && playable.url !== proxy) {
+        if (window.MuseHub.UI) window.MuseHub.UI.showToast("音源直连失败，正在尝试安全线路");
+        return window.MuseHub.Player.playResolvedSong(Object.assign({}, playable, {
+          url: proxy,
+          audioProxy: true
+        }));
+      }
+      throw error;
+    }
   }
 
   function collectTencentIdentities(song) {
@@ -75,7 +108,8 @@
         const response = await attempt.run();
         return normalizePlayable(song, response);
       } catch (error) {
-        errors.push(Object.assign(error, { attempt: attempt.label }));
+        error.attempt = attempt.label;
+        errors.push(error);
       }
     }
     throw errors[errors.length - 1] || playableError("当前歌曲暂无可用音源", "NO_URL");
@@ -143,7 +177,8 @@
     return String(value || "")
       .toLowerCase()
       .replace(/[（(【\[].*?[）)】\]]/g, "")
-      .replace(/\b(live|remix|cover|ver\.?|version|mv|伴奏|翻唱|现场|变速|加速|慢速|片段|完整版|试听版)\b/gi, "")
+      .replace(/\b(live|remix|cover|ver\.?|version|mv)\b/gi, "")
+      .replace(/伴奏|翻唱|现场|变速|加速|慢速|片段|完整版|试听版/gi, "")
       .replace(/[^\p{L}\p{N}]+/gu, "")
       .trim();
   }
@@ -151,7 +186,7 @@
   function artistTokens(value) {
     return String(value || "")
       .toLowerCase()
-      .split(/[、,，/&／\s]+/)
+      .split(/[、，,&/\s]+/)
       .map(cleanText)
       .filter(Boolean);
   }
@@ -294,7 +329,7 @@
     window.MuseHub.Player.setLoading(song);
     try {
       const playable = await resolvePlayableSong(song);
-      await window.MuseHub.Player.playResolvedSong(playable);
+      await playResolvedWithRetry(playable);
       requestLyric(playable);
       return playable;
     } catch (error) {

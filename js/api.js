@@ -1,15 +1,46 @@
 (function () {
   const API_BASE = "https://api.vkeys.cn";
+  const API_PROXY_BASE = "/api/vkeys";
   const DEFAULT_TIMEOUT = 12000;
 
-  function buildUrl(path, params) {
-    const url = new URL(path, API_BASE);
+  function buildUrl(path, params, base) {
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    const url = new URL(normalizedPath, base || API_BASE);
     Object.entries(params || {}).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
         url.searchParams.set(key, value);
       }
     });
     return url.toString();
+  }
+
+  function canUseProxy(options) {
+    if (options && options.direct) return false;
+    if (!window.location || window.location.protocol === "file:") return false;
+    return /^https?:$/.test(window.location.protocol);
+  }
+
+  function proxyUrl(path, params) {
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    return buildUrl(`${API_PROXY_BASE}${normalizedPath}`, params, window.location.origin);
+  }
+
+  async function requestUrl(url, signal) {
+    const response = await fetch(url, {
+      method: "GET",
+      signal,
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const payload = await response.json();
+    if (payload && payload.code !== undefined && Number(payload.code) !== 200) {
+      const error = new Error(payload.message || payload.msg || "接口返回异常");
+      error.apiCode = payload.code;
+      throw error;
+    }
+    return payload;
   }
 
   async function request(path, params, options) {
@@ -25,19 +56,20 @@
     if (externalSignal) externalSignal.addEventListener("abort", abortFromExternal, { once: true });
 
     try {
-      const response = await fetch(buildUrl(path, params), {
-        method: "GET",
-        signal: controller.signal,
-        headers: { Accept: "application/json" }
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      const urls = canUseProxy(options)
+        ? [proxyUrl(path, params), buildUrl(path, params, API_BASE)]
+        : [buildUrl(path, params, API_BASE)];
+      let lastError = null;
+      for (const url of urls) {
+        try {
+          return await requestUrl(url, controller.signal);
+        } catch (error) {
+          lastError = error;
+          if (error && error.apiCode !== undefined) throw error;
+          if (externalSignal && externalSignal.aborted) throw error;
+        }
       }
-      const payload = await response.json();
-      if (payload && payload.code !== undefined && Number(payload.code) !== 200) {
-        throw new Error(payload.message || payload.msg || "接口返回异常");
-      }
-      return payload;
+      throw lastError || new Error("接口请求失败");
     } catch (error) {
       if (error.name === "AbortError") {
         throw new Error(externalSignal && externalSignal.aborted ? "请求已取消" : "请求超时，请稍后再试");
@@ -84,6 +116,7 @@
   window.MuseHub = window.MuseHub || {};
   window.MuseHub.Api = {
     API_BASE,
+    API_PROXY_BASE,
     request,
     fetchJson,
     searchTencent,

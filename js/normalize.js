@@ -111,6 +111,13 @@
 
   function normalizePlayableSong(song, response) {
     const raw = dataObject(response);
+    if (typeof raw === "string") {
+      return Object.assign({}, song, {
+        url: raw,
+        playable: Boolean(raw),
+        raw: Object.assign({}, song.raw && { search: song.raw }, { playable: raw })
+      });
+    }
     if (!raw) return song;
     const source = song.source === "netease" ? "netease" : "tencent";
     const normalized = source === "netease" ? normalizeNeteaseSong(raw) : normalizeTencentSong(raw);
