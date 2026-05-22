@@ -1,6 +1,7 @@
 (function () {
   const TENCENT_QUALITIES = [8, 4, null];
   const NETEASE_QUALITIES = [4, 3, null];
+  const PLAYBACK_TIMEOUT = 8000;
   let lyricRequestId = 0;
 
   function platformId(song) {
@@ -122,14 +123,14 @@
       TENCENT_QUALITIES.forEach((quality) => {
         const params = { id: ids.id };
         if (quality) params.quality = quality;
-        attempts.push({ label: attemptLabel("tencent/geturl", params), run: () => window.MuseHub.Api.getTencentSongUrl(params) });
+        attempts.push({ label: attemptLabel("tencent/geturl", params), run: () => window.MuseHub.Api.getTencentSongUrl(params, { timeout: PLAYBACK_TIMEOUT }) });
       });
     }
     if (ids.mid) {
       TENCENT_QUALITIES.forEach((quality) => {
         const params = { mid: ids.mid };
         if (quality) params.quality = quality;
-        attempts.push({ label: attemptLabel("tencent/geturl", params), run: () => window.MuseHub.Api.getTencentSongUrl(params) });
+        attempts.push({ label: attemptLabel("tencent/geturl", params), run: () => window.MuseHub.Api.getTencentSongUrl(params, { timeout: PLAYBACK_TIMEOUT }) });
       });
     }
     return attempts;
@@ -144,7 +145,7 @@
       ids.id ? { id: ids.id } : null,
       ids.mid ? { mid: ids.mid } : null
     ].filter(Boolean).forEach((params) => {
-      attempts.push({ label: attemptLabel("tencent/detail", params), run: () => window.MuseHub.Api.getTencentSongDetail(params) });
+      attempts.push({ label: attemptLabel("tencent/detail", params), run: () => window.MuseHub.Api.getTencentSongDetail(params, { timeout: PLAYBACK_TIMEOUT }) });
     });
     return attempts;
   }
@@ -161,7 +162,7 @@
     const attempts = NETEASE_QUALITIES.map((quality) => {
       const params = { id };
       if (quality) params.quality = quality;
-      return { label: attemptLabel("netease", params), run: () => window.MuseHub.Api.getNeteaseSongUrl(params) };
+      return { label: attemptLabel("netease", params), run: () => window.MuseHub.Api.getNeteaseSongUrl(params, { timeout: PLAYBACK_TIMEOUT }) };
     });
     return tryAttempts(song, attempts);
   }
@@ -254,8 +255,8 @@
       const played = await playSong(candidate, {
         force: true,
         triedIds: (triedIds || []).concat(candidate.id),
-        autoSearchTried: options && options.autoSearchTried,
-        switchDepth: depth + 1,
+        autoSearchTried: true,
+        switchDepth: 3,
         suppressFinalToast: true
       });
       if (played) {
@@ -312,19 +313,6 @@
       return window.MuseHub.Player.toggle();
     }
 
-    const settings = window.MuseHub.Storage.getSettings();
-    if (settings.autoSwitchSource && settings.preferOriginalPlatform === false && !opts.preselectTried) {
-      const candidate = localAlternateCandidates(song, [song.id]).find((item) => item.source === "tencent") || null;
-      if (candidate && candidate.id !== song.id) {
-        return playSong(candidate, {
-          force: true,
-          preselectTried: true,
-          triedIds: [candidate.id],
-          suppressFinalToast: opts.suppressFinalToast
-        });
-      }
-    }
-
     const triedIds = Array.from(new Set(opts.triedIds || [song.id]));
     window.MuseHub.Player.setLoading(song);
     try {
@@ -350,7 +338,7 @@
         if (played) return played;
       }
 
-      if (!opts.autoSearchTried) {
+      if (!localCandidates.length && !opts.autoSearchTried) {
         const backgroundCandidates = await backgroundAlternateCandidates(song, triedIds);
         if (backgroundCandidates.length) {
           if (window.MuseHub.UI && !opts.suppressFinalToast) window.MuseHub.UI.showToast("当前来源不可用，正在轻量换源");
